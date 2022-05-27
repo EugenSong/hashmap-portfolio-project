@@ -98,13 +98,12 @@ class HashMap:
         Returns:
             buckets(int): number of empty buckets
         """
-        full_bucket = 0
-        capacity = self.get_capacity()
+        buckets = self.get_capacity()
 
         for each in range(self.get_capacity()):
-            if self._buckets.get_at_index(each):
-                full_bucket += 1
-        return capacity - full_bucket
+            if self._buckets.get_at_index(each).length() != 0:
+                buckets -= 1
+        return buckets
 
     def table_load(self) -> float:
         """
