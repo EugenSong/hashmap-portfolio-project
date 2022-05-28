@@ -193,6 +193,7 @@ class HashMap:
         # gets LinkedList at bucket index position
         current_bucket = self._buckets.get_at_index(index)
 
+        # iterate LinkedList using iterator
         for each in current_bucket:
             if each.key == key:
                 return each.value
@@ -267,13 +268,15 @@ class HashMap:
         # init new DynamicArray to hold all keys
         keys = DynamicArray()
 
-        # iterate through DynamicArray buckets
+        # iterate through DynamicArray bucket
         for each in range(self.get_capacity()):
             # iter through each link in LinkedList
             for link in self._buckets.get_at_index(each):
                 keys.append(link.key)
         return keys
 
+    def get_buckets(self):
+        return self._buckets
 
 def find_mode(da: DynamicArray) -> (DynamicArray, int):
     """
@@ -290,6 +293,8 @@ def find_mode(da: DynamicArray) -> (DynamicArray, int):
         tuple (DynamicArray, int)
     """
     mode_array = DynamicArray()
+    keys_array = DynamicArray()
+    highest = 0
 
     # if you'd like to use a hash map,
     # use this instance of your Separate Chaining HashMap
@@ -297,15 +302,29 @@ def find_mode(da: DynamicArray) -> (DynamicArray, int):
 
     # iterate given DA to hash each value
     for i in range(da.length()):
-        # call put() method --> hashes and places into map(HashMap)
-        map.put(da.get_at_index(i), 0)
+        # condition: if key DNE in map --> place key/value of 0 into map
+        if not map.contains_key(da.get_at_index(i)):
+            map.put(da.get_at_index(i), 1)
+            if 1 > highest:
+                highest = 1
+        else:
+            map.put(da.get_at_index(i), map.get(da.get_at_index(i)) + 1)
+            if int(map.get(da.get_at_index(i))) + 1 > highest:
+                highest = int(map.get(da.get_at_index(i)))
 
-    # iterate capacity and append each bucket's self._size
-    for i in range(da.length() // 3):
-        mode_array.append()
+    # iterate HashMap
+    for j in range(da.length() // 3):
+        # iterate through each node
+        for link in map.get_buckets().get_at_index(j):
+            if link.value == highest:
+                mode_array.append(link.key)
 
-    # find max of mode_array (mode val)
-    # iterate maps and see which key had the max as its size
+    # print(keys_array)
+    # print(highest)
+    # print(map)
+    # print(mode_array)
+    return mode_array, highest
+
 # ------------------- BASIC TESTING ---------------------------------------- #
 
 if __name__ == "__main__":
