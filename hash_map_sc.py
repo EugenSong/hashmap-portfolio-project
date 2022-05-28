@@ -55,7 +55,7 @@ class HashMap:
 
     def put(self, key: str, value: object) -> None:
         """
-        Updates the key/value pair in hash map. If given key already exists, its associated value must be replaced
+        -Updates the key/value pair in hash map. If given key already exists, its associated value must be replaced
         with the new value. If given key does not exist, a key/value pair must be added.
 
         Parameters:
@@ -90,7 +90,7 @@ class HashMap:
 
     def empty_buckets(self) -> int:
         """
-        Returns the number of empty "buckets" in the hash table.
+        -Returns the number of empty "buckets" in the hash table.
 
         Parameters:
             self(HashMap)
@@ -109,7 +109,7 @@ class HashMap:
 
     def table_load(self) -> float:
         """
-        Returns the current hash table's load factor.
+        -Returns the current hash table's load factor.
             "load factor" is the average number of elements in each bucket
                 load factor = # of total elements in table / # of buckets
         Parameters:
@@ -126,7 +126,7 @@ class HashMap:
 
     def clear(self) -> None:
         """
-        Clears the contents of hash map. Does not change the underlying hash table capacity.
+        -Clears the contents of hash map. Does not change the underlying hash table capacity.
 
         Parameters:
             self(HashMap)
@@ -136,14 +136,13 @@ class HashMap:
         """
         # iterate current buckets and replace each with empty LinkedList
         for each in range(self.get_capacity()):
-            self._buckets.set_at_index(each, None)
             self._buckets.set_at_index(each, LinkedList())
         self._size = 0
         return
 
     def resize_table(self, new_capacity: int) -> None:
         """
-        Changes the capacity of the internal hash table. All existing key/value pairs must remain and be rehashed
+        -Changes the capacity of the internal hash table. All existing key/value pairs must remain and be rehashed
         into a new hash map. If new capacity is < 1 --> do nothing
 
         Parameters:
@@ -177,7 +176,7 @@ class HashMap:
 
     def get(self, key: str) -> object:
         """
-        Returns the value associated with given key. If key does not exist --> return None
+        -Returns the value associated with given key. If key does not exist --> return None
 
         Parameters:
             self(HashMap)
@@ -201,7 +200,7 @@ class HashMap:
 
     def contains_key(self, key: str) -> bool:
         """
-        Returns True if given key exists in the hash map, otherwise return False. If empty --> return False
+        -Returns True if given key exists in the hash map, otherwise return False. If empty --> return False
 
         Parameters:
             self(HashMap)
@@ -231,7 +230,7 @@ class HashMap:
 
     def remove(self, key: str) -> None:
         """
-        Removes the given key and its associated value from the hash map. If key does not exist --> do nothing
+        -Removes the given key and its associated value from the hash map. If key does not exist --> do nothing
 
         Parameters:
             self(HashMap)
@@ -257,7 +256,7 @@ class HashMap:
 
     def get_keys(self) -> DynamicArray:
         """
-        Returns a DynamicArray that contains all the keys stored in the hash map. Order does not matter.
+        -Returns a DynamicArray that contains all the keys stored in the hash map. Order does not matter.
 
         Parameters:
             self(HashMap)
@@ -275,13 +274,14 @@ class HashMap:
                 keys.append(link.key)
         return keys
 
+
 def find_mode(da: DynamicArray) -> (DynamicArray, int):
     """
-    Returns a tuple containing
+    -Returns a tuple containing
         1) DynamicArray that contains the mode value/s of the array
         2) integer that represents the highest frequency
-    Multiple values with the highest frequency is to be included in DA and order does not matter.
-    Need be implemented in o(n) time complexity
+    -Multiple values with the highest frequency is to be included in DA and order does not matter.
+    -Need be implemented in o(n) time complexity
 
     Parameters:
         da(DynamicArray): array with all values
@@ -289,11 +289,23 @@ def find_mode(da: DynamicArray) -> (DynamicArray, int):
     Return:
         tuple (DynamicArray, int)
     """
+    mode_array = DynamicArray()
+
     # if you'd like to use a hash map,
     # use this instance of your Separate Chaining HashMap
     map = HashMap(da.length() // 3, hash_function_1)
 
+    # iterate given DA to hash each value
+    for i in range(da.length()):
+        # call put() method --> hashes and places into map(HashMap)
+        map.put(da.get_at_index(i), 0)
 
+    # iterate capacity and append each bucket's self._size
+    for i in range(da.length() // 3):
+        mode_array.append()
+
+    # find max of mode_array (mode val)
+    # iterate maps and see which key had the max as its size
 # ------------------- BASIC TESTING ---------------------------------------- #
 
 if __name__ == "__main__":
@@ -378,13 +390,13 @@ if __name__ == "__main__":
     # m.clear()
     # print(m.get_size(), m.get_capacity())
 
-    print("\nPDF - resize example 1")
-    print("----------------------")
-    m = HashMap(20, hash_function_1)
-    m.put('key1', 10)
-    print(m.get_size(), m.get_capacity(), m.get('key1'), m.contains_key('key1'))
-    m.resize_table(30)
-    print(m.get_size(), m.get_capacity(), m.get('key1'), m.contains_key('key1'))
+    # print("\nPDF - resize example 1")
+    # print("----------------------")
+    # m = HashMap(20, hash_function_1)
+    # m.put('key1', 10)
+    # print(m.get_size(), m.get_capacity(), m.get('key1'), m.contains_key('key1'))
+    # m.resize_table(30)
+    # print(m.get_size(), m.get_capacity(), m.get('key1'), m.contains_key('key1'))
 
     # print("\nPDF - resize example 2")
     # print("----------------------")
@@ -479,23 +491,23 @@ if __name__ == "__main__":
     # m.resize_table(2)
     # print(m.get_keys())
     #
-    # print("\nPDF - find_mode example 1")
-    # print("-----------------------------")
-    # da = DynamicArray(["apple", "apple", "grape", "melon", "melon", "peach"])
-    # map = HashMap(da.length() // 3, hash_function_1)
-    # mode, frequency = find_mode(da)
-    # print(f"Input: {da}\nMode: {mode}, Frequency: {frequency}")
-    #
-    # print("\nPDF - find_mode example 2")
-    # print("-----------------------------")
-    # test_cases = (
-    #     ["Arch", "Manjaro", "Manjaro", "Mint", "Mint", "Mint", "Ubuntu", "Ubuntu", "Ubuntu", "Ubuntu"],
-    #     ["one", "two", "three", "four", "five"],
-    #     ["2", "4", "2", "6", "8", "4", "1", "3", "4", "5", "7", "3", "3", "2"]
-    # )
-    #
-    # for case in test_cases:
-    #     da = DynamicArray(case)
-    #     map = HashMap(da.length() // 3, hash_function_2)
-    #     mode, frequency = find_mode(da)
-    #     print(f"Input: {da}\nMode: {mode}, Frequency: {frequency}\n")
+    print("\nPDF - find_mode example 1")
+    print("-----------------------------")
+    da = DynamicArray(["apple", "apple", "grape", "melon", "melon", "peach"])
+    map = HashMap(da.length() // 3, hash_function_1)
+    mode, frequency = find_mode(da)
+    print(f"Input: {da}\nMode: {mode}, Frequency: {frequency}")
+
+    print("\nPDF - find_mode example 2")
+    print("-----------------------------")
+    test_cases = (
+        ["Arch", "Manjaro", "Manjaro", "Mint", "Mint", "Mint", "Ubuntu", "Ubuntu", "Ubuntu", "Ubuntu"],
+        ["one", "two", "three", "four", "five"],
+        ["2", "4", "2", "6", "8", "4", "1", "3", "4", "5", "7", "3", "3", "2"]
+    )
+
+    for case in test_cases:
+        da = DynamicArray(case)
+        map = HashMap(da.length() // 3, hash_function_2)
+        mode, frequency = find_mode(da)
+        print(f"Input: {da}\nMode: {mode}, Frequency: {frequency}\n")
