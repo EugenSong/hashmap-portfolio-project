@@ -118,6 +118,7 @@ class HashMap:
         Returns:
             factor(float): load factor for hash table
         """
+        # init num of total elements and num of buckets
         total_elements = self.get_size()
         buckets = self.get_capacity()
 
@@ -275,8 +276,17 @@ class HashMap:
                 keys.append(link.key)
         return keys
 
-    def get_buckets(self):
+    def get_buckets(self) -> DynamicArray:
+        """
+        -Helper function to return the underlying DynamicArray structure
+
+        Parameters:
+            self(HashMap)
+        Returns:
+            DynamicArray: dynamic array for passed HashMap
+        """
         return self._buckets
+
 
 def find_mode(da: DynamicArray) -> (DynamicArray, int):
     """
@@ -293,10 +303,8 @@ def find_mode(da: DynamicArray) -> (DynamicArray, int):
         tuple (DynamicArray, int)
     """
     mode_array = DynamicArray()
-    keys_array = DynamicArray()
     highest = 0
 
-    # if you'd like to use a hash map,
     # use this instance of your Separate Chaining HashMap
     map = HashMap(da.length() // 3, hash_function_1)
 
@@ -312,20 +320,18 @@ def find_mode(da: DynamicArray) -> (DynamicArray, int):
             if int(map.get(da.get_at_index(i))) + 1 > highest:
                 highest = int(map.get(da.get_at_index(i)))
 
-    # iterate HashMap
+    # iterate capacity of HashMap (da.length // 3)
     for j in range(da.length() // 3):
-        # iterate through each node
+        # iterate through each node in LinkedList --> call LinkedList using
+        #       helper custom helper function, get_buckets() to retrieve DynamicArray
         for link in map.get_buckets().get_at_index(j):
             if link.value == highest:
                 mode_array.append(link.key)
 
-    # print(keys_array)
-    # print(highest)
-    # print(map)
-    # print(mode_array)
     return mode_array, highest
 
 # ------------------- BASIC TESTING ---------------------------------------- #
+
 
 if __name__ == "__main__":
 
