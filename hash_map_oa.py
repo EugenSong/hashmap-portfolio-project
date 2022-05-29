@@ -71,33 +71,40 @@ class HashMap:
         hash_val = self._hash_function(key)
         index = hash_val % self.get_capacity()  # <--- returns index in DynamicArray
         # *********************************************************************
-
         # gets value at hashed index and init new hash entry (contains tombstone implemented)
         current_position = self._buckets.get_at_index(index)
         new_hash_entry = HashEntry(key, value)
         # ************************************************************************************************
-
-        # corner case 1) if current position is None (empty)
+        # PRE-PRECONDITION CHECK LOAD FACTOR BEFORE ANYTHING --> resize to optimize for future performance
+        if self.table_load() >= 0.5:
+            self.resize_table(self.get_capacity() * 2)
+        # ************************************************************************************************
+        # corner case 1) if current position is None (empty) --> insert hash entry
         if current_position is None:
             self._buckets.set_at_index(index, new_hash_entry)
             self._size += 1
-        # corner case 2) if current position already has the key we want to insert --> update value
+        # corner case 2) if current position IS the key we want to insert --> update value
         elif self._buckets.get_at_index(index).key == key:
             self._buckets.get_at_index(index).value = value
-        # else if spot is not empty AND different key (already occupied) --> execute quadratic probing
+        # else if spot is not empty AND spot has different key (already occupied) --> execute quadratic probing
         else:
-            # init the amount to move by
+            # init probing counter for use in probing formula
             move_by = 1
             keepGoing = True
-            # iterate through DA to perform quadratic probing
-            #   DNE --> keepGoing stays True
-            #  None encountered OR updating value --> keepGoing = False
-            while keepGoing and move_by < self.get_capacity():
-                # if key already exists --> update HashEntry value
-                if self._buckets.get_at_index(move_by).key == key:
-                    self._buckets.get_at_index(move_by).value = value
+            # iterate through DA using perform quadratic probing and wrapping
+            while keepGoing:
+                probe = (index + move_by * move_by) % self.get_capacity()
+                # if empty slot --> insert
+                if self._buckets.get_at_index(probe) is None:
+                    self._buckets.set_at_index(probe, new_hash_entry)
+                    self._size += 1
                     keepGoing = False
-                move_by += 1
+                # if key already exists --> update HashEntry value
+                elif self._buckets.get_at_index(probe).key == key:
+                    self._buckets.get_at_index(probe).value = value
+                    keepGoing = False
+                else:
+                    move_by += 1
         return
 
     def table_load(self) -> float:
@@ -122,7 +129,7 @@ class HashMap:
         """
         TODO: Write this implementation
         """
-        pass
+        return self.get_capacity() - self.get_size()
 
     def resize_table(self, new_capacity: int) -> None:
         """
@@ -200,42 +207,43 @@ class HashMap:
         return da
 # ------------------- BASIC TESTING ---------------------------------------- #
 
+
 if __name__ == "__main__":
 
-    # print("\nPDF - put example 1")
-    # print("-------------------")
-    # m = HashMap(50, hash_function_1)
-    # for i in range(150):
-    #     m.put('str' + str(i), i * 100)
-    #     if i % 25 == 24:
-    #         print(m.empty_buckets(), m.table_load(), m.get_size(), m.get_capacity())
-    #
-    # print("\nPDF - put example 2")
-    # print("-------------------")
-    # m = HashMap(40, hash_function_2)
-    # for i in range(50):
-    #     m.put('str' + str(i // 3), i * 100)
-    #     if i % 10 == 9:
-    #         print(m.empty_buckets(), m.table_load(), m.get_size(), m.get_capacity())
-
-    print("\nPDF - table_load example 1")
-    print("--------------------------")
-    m = HashMap(100, hash_function_1)
-    print(m.table_load())
-    m.put('key1', 10)
-    print(m.table_load())
-    m.put('key2', 20)
-    print(m.table_load())
-    m.put('key1', 30)
-    print(m.table_load())
-
-    print("\nPDF - table_load example 2")
-    print("--------------------------")
+    print("\nPDF - put example 1")
+    print("-------------------")
     m = HashMap(50, hash_function_1)
+    for i in range(150):
+        m.put('str' + str(i), i * 100)
+        if i % 25 == 24:
+            print(m.empty_buckets(), m.table_load(), m.get_size(), m.get_capacity())
+
+    print("\nPDF - put example 2")
+    print("-------------------")
+    m = HashMap(40, hash_function_2)
     for i in range(50):
-        m.put('key' + str(i), i * 100)
-        if i % 10 == 0:
-            print(m.table_load(), m.get_size(), m.get_capacity())
+        m.put('str' + str(i // 3), i * 100)
+        if i % 10 == 9:
+            print(m.empty_buckets(), m.table_load(), m.get_size(), m.get_capacity())
+
+    # print("\nPDF - table_load example 1")
+    # print("--------------------------")
+    # m = HashMap(100, hash_function_1)
+    # print(m.table_load())
+    # m.put('key1', 10)
+    # print(m.table_load())
+    # m.put('key2', 20)
+    # print(m.table_load())
+    # m.put('key1', 30)
+    # print(m.table_load())
+    #
+    # print("\nPDF - table_load example 2")
+    # print("--------------------------")
+    # m = HashMap(50, hash_function_1)
+    # for i in range(50):
+    #     m.put('key' + str(i), i * 100)
+    #     if i % 10 == 0:
+    #         print(m.table_load(), m.get_size(), m.get_capacity())
 
     # print("\nPDF - empty_buckets example 1")
     # print("-----------------------------")
