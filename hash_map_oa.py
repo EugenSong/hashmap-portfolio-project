@@ -91,9 +91,10 @@ class HashMap:
             # init probing counter for use in probing formula
             move_by = 1
             keepGoing = True
+            probe = (index + move_by * move_by) % self.get_capacity()
             # iterate through DA using perform quadratic probing and wrapping
             while keepGoing:
-                probe = (index + move_by * move_by) % self.get_capacity()
+                probe = (probe + move_by * move_by) % self.get_capacity()
                 # if empty slot --> insert
                 if self._buckets.get_at_index(probe) is None:
                     self._buckets.set_at_index(probe, new_hash_entry)
@@ -123,7 +124,7 @@ class HashMap:
         total_capacity = self.get_capacity()
 
         factor = total_elements / total_capacity
-        return float(factor)
+        return factor
 
     def empty_buckets(self) -> int:
         """
@@ -152,7 +153,10 @@ class HashMap:
 
         # iterate buckets (capacity) and copy values over from old HashMap --> new HashMap
         for each in range(self.get_capacity()):
-            new_map._buckets.set_at_index(each, self._buckets.get_at_index(each))
+            if self._buckets.get_at_index(each).key == "_TS_":
+                new_map._buckets.set_at_index(each, None)
+            else:
+                new_map._buckets.set_at_index(each, self._buckets.get_at_index(each))
 
         # set self._buckets to new._buckets and reinitialize capacity
         self._buckets = new_map._buckets
@@ -164,8 +168,8 @@ class HashMap:
         TODO: Write this implementation
         """
         for each in range(self.get_capacity()):
-            if self._buckets.get_at_index(each).kety == key:
-                return each.value
+            if self._buckets.get_at_index(each).key == key:
+                return self._buckets.get_at_index(each).value
         return None
 
     def contains_key(self, key: str) -> bool:
@@ -184,8 +188,11 @@ class HashMap:
         TODO: Write this implementation
         """
         for each in range(self.get_capacity()):
-            if self._buckets.get_at_index(each).kety == key:
-                self._buckets.set_at_index(each, None)
+            # if key is found --> insert a new HashEntry with key: _TS_ and update isTombstone -> True
+            if self._buckets.get_at_index(each).key == key:
+                self._buckets.set_at_index(each, HashEntry("_TS_", None))
+                self._buckets.get_at_index(each).is_tombstone = True
+                self._size -= 1
         return
 
     def clear(self) -> None:
@@ -194,6 +201,7 @@ class HashMap:
         """
         for each in range(self.get_capacity()):
             self._buckets.set_at_index(each, None)
+            self._size = 0
         return
 
     def get_keys(self) -> DynamicArray:
@@ -202,9 +210,11 @@ class HashMap:
         """
         da = DynamicArray()
         for each in range(self.get_capacity()):
-            if self._buckets.get_at_index(each) is not None:
-                da.append(each.key)
+            if self._buckets.get_at_index(each) is not None and self._buckets.get_at_index(each).is_tombstone is False:
+                da.append(self._buckets.get_at_index(each).key)
         return da
+
+
 # ------------------- BASIC TESTING ---------------------------------------- #
 
 
