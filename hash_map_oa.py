@@ -164,8 +164,8 @@ class HashMap:
         TODO: Write this implementation
         """
         for each in range(self.get_capacity()):
-            if each.key == key:
-                return each
+            if self._buckets.get_at_index(each).kety == key:
+                return each.value
         return None
 
     def contains_key(self, key: str) -> bool:
@@ -175,7 +175,7 @@ class HashMap:
         if self.get_size() == 0:
             return False
         for each in range(self.get_capacity()):
-            if each.key == key:
+            if self._buckets.get_at_index(each).key == key:
                 return True
         return False
 
@@ -184,7 +184,7 @@ class HashMap:
         TODO: Write this implementation
         """
         for each in range(self.get_capacity()):
-            if each.key == key:
+            if self._buckets.get_at_index(each).kety == key:
                 self._buckets.set_at_index(each, None)
         return
 
