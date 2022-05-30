@@ -227,6 +227,8 @@ class HashMap:
         """
         TODO: Write this implementation
         """
+        if not self.contains_key(key):
+            return
         for each in range(self.get_capacity()):
             # if key is found --> insert a new HashEntry with key: _TS_ and update isTombstone -> True
             if self._buckets.get_at_index(each) is not None:
@@ -234,7 +236,6 @@ class HashMap:
                     self._buckets.get_at_index(each).is_tombstone = True
                     self._size -= 1
                     return
-        return
 
     def clear(self) -> None:
         """
