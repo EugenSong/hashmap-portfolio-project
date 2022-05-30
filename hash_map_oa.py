@@ -67,18 +67,18 @@ class HashMap:
         Returns:
             None
         """
-        # ******* 2-step Hash Function Computation --> find hash ***********
+        # --------------------- 2-step Hash Function Computation --> find hash ---------------------------
         hash_val = self._hash_function(key)
         index = hash_val % self.get_capacity()  # <--- returns index in DynamicArray
-        # *********************************************************************
+        # -------------------------------------------------------------------------------
         # gets value at hashed index and init new hash entry (tombstone implemented)
         current_position = self._buckets.get_at_index(index)
         new_hash_entry = HashEntry(key, value)
-        # ************************************************************************************************
+        # --------------------------------------------------------------------------------------------------
         # PRE-PRECONDITION CHECK LOAD FACTOR BEFORE ANYTHING --> resize to optimize for future performance
         if self.table_load() >= 0.5:
             self.resize_table(self.get_capacity() * 2)
-        # ************************************************************************************************
+        # -------------------------------------------------------------------------------
         # corner case 1) if current position is None (empty) --> insert hash entry
         if current_position is None:
             self._buckets.set_at_index(index, new_hash_entry)
@@ -86,14 +86,20 @@ class HashMap:
         # corner case 2) if current position IS the key we want to insert --> update value
         elif current_position.key == key and current_position.is_tombstone is False:
             current_position.value = value
+        # corner case 3) if current is a tombstone w/ the key --> update value and tombstone value
+        elif current_position.key == key and current_position.is_tombstone is True:
+            current_position.value = value
+            current_position.is_tombstone = False
+            self._size += 1
         # else if spot is not empty AND spot has different key (already occupied) --> execute quadratic probing
-        elif current_position.key != key and current_position is not None:
+        else:
             # init probing counter for use in probing formula
             move_by = 1
             keepGoing = True
-            probe = (index + move_by * move_by) % self.get_capacity()
             # iterate through DA using perform quadratic probing and wrapping
             while keepGoing:
+                probe = (index + move_by ** 2) % self.get_capacity()
+
                 # if empty slot --> insert
                 if self._buckets.get_at_index(probe) is None:
                     self._buckets.set_at_index(probe, new_hash_entry)
@@ -104,9 +110,14 @@ class HashMap:
                         self._buckets.get_at_index(probe).is_tombstone is False:
                     self._buckets.get_at_index(probe).value = value
                     keepGoing = False
+                elif self._buckets.get_at_index(probe).key == key and self._buckets.get_at_index(probe).is_tombstone \
+                        is True:
+                    self._buckets.get_at_index(probe).value = value
+                    self._buckets.get_at_index(probe).is_tombstone = False
+                    self._size += 1
+                    keepGoing = False
                 else:
                     move_by += 1
-                probe = (index + move_by * move_by) % self.get_capacity()
         return
 
     def table_load(self) -> float:
