@@ -109,12 +109,14 @@ class HashMap:
                         self._buckets.get_at_index(probe).is_tombstone is False:
                     self._buckets.get_at_index(probe).value = value
                     keepGoing = False
+                    # if key exists but is a tombstone
                 elif self._buckets.get_at_index(probe).key == key and self._buckets.get_at_index(probe).is_tombstone \
                         is True:
                     self._buckets.get_at_index(probe).value = value
                     self._buckets.get_at_index(probe).is_tombstone = False
                     self._size += 1
                     keepGoing = False
+                    # if slot is filled by a different key
                 else:
                     move_by += 1
         return
@@ -159,43 +161,18 @@ class HashMap:
         if new_capacity < 1 or new_capacity < self.get_size():
             return
 
-        # # create a new HashMap with new capacity
-        # new_map = HashMap(new_capacity, self._hash_function)
-        #
-        # # iterate buckets (capacity)
-        # for each in range(self._buckets.length()):
-        #     if self._buckets.get_at_index(each) is not None:
-        #         if self._buckets.get_at_index(each).is_tombstone is False:
-        #             new_map.put(self._buckets.get_at_index(each).key, self._buckets.get_at_index(each).value)
-        #
-        # # set self._buckets to new._buckets and reinitialize capacity
-        # self._buckets = new_map._buckets
-        # self._capacity = new_capacity
+        # create a new HashMap with new capacity
+        new_map = HashMap(new_capacity, self._hash_function)
 
-        capacity = self.get_capacity()
-        temp = DynamicArray()
+        # iterate buckets (capacity)
+        for each in range(self._buckets.length()):
+            if self._buckets.get_at_index(each) is not None:
+                if self._buckets.get_at_index(each).is_tombstone is False:
+                    new_map.put(self._buckets.get_at_index(each).key, self._buckets.get_at_index(each).value)
 
-        # Copy bucket HashEntries to temp DA
-        for a in range(self._buckets.length()):
-            if self._buckets.get_at_index(a) is None:
-                temp.append(None)
-            else:
-                temp.append(self._buckets.get_at_index(a))
-
-        # clear the contents of curr DynamicArray
-        self.clear()
-
-        # append None to self DA to account for new capacity
-        for j in range(new_capacity - capacity):
-            self._buckets.append(None)
-
-        # reinit self capacity
-        self._capacity = new_capacity
-
-        # Hash valid HashEntries into self w/ new capacity
-        for i in range(temp.length()):
-            if temp.get_at_index(i) is not None and temp.get_at_index(i).is_tombstone is False:
-                self.put(temp.get_at_index(i).key, temp.get_at_index(i).value)
+        # set self._buckets to new map's buckets and reinitialize capacity to new map's capacity
+        self._buckets = new_map._buckets
+        self._capacity = new_map.get_capacity()
 
         return
 
