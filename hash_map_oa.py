@@ -141,7 +141,13 @@ class HashMap:
 
     def empty_buckets(self) -> int:
         """
-        TODO: Write this implementation
+        Returns the number of empty buckets.
+            algorithm: # of total buckets - # of elements
+        Parameters:
+            self(HashMap)
+
+        Returns:
+            int: number of empty buckets
         """
         return self.get_capacity() - self.get_size()
 
@@ -178,9 +184,17 @@ class HashMap:
 
     def get(self, key: str) -> object:
         """
-        TODO: Write this implementation
+        Returns value associated w/ given key. If key DNE --> return None
+
+        Parameters:
+            self(HashMap)
+            key(str): key we are searching for
+
+        Returns:
+            object: value of searched key --> return None if DNE
         """
         for each in range(self.get_capacity()):
+            # if entry is not None and not a tombstone and IS the key --> return its value
             if self._buckets.get_at_index(each) is not None:
                 if self._buckets.get_at_index(each).is_tombstone is False and \
                         self._buckets.get_at_index(each).key == key:
@@ -189,11 +203,23 @@ class HashMap:
 
     def contains_key(self, key: str) -> bool:
         """
-        TODO: Write this implementation
+        Returns a boolean based on whether desired key is in HashMap.
+
+        Parameters:
+            self(HashMap)
+            key(str): key we are searching for
+
+        Returns:
+            bool:
+                Exist --> True
+                DNE --> False
         """
+        # corner case) if size 0 --> return False
         if self.get_size() == 0:
             return False
+
         for each in range(self.get_capacity()):
+            # if value at index is not null and not a tombstone and IS the key --> return true
             if self._buckets.get_at_index(each) is not None:
                 if self._buckets.get_at_index(each).key == key and \
                         self._buckets.get_at_index(each).is_tombstone is False:
@@ -202,7 +228,14 @@ class HashMap:
 
     def remove(self, key: str) -> None:
         """
-        TODO: Write this implementation
+        Removes given key and its associated value from HashMap --> "remove" by updating value of .is_tombstone
+
+        Parameters:
+            self(HashMap)
+            key(str): key we are removing
+
+        Returns:
+            None
         """
         if not self.contains_key(key):
             return
@@ -216,8 +249,16 @@ class HashMap:
 
     def clear(self) -> None:
         """
-        TODO: Write this implementation
+        Clears contents of HashMap. Do not touch underlying hash table capacity.
+            Don't forget to reset size.
+
+        Parameters:
+            self(HashMap)
+
+        Returns:
+            None
         """
+        # set each bucket (value of each index) to null
         for each in range(self.get_capacity()):
             self._buckets.set_at_index(each, None)
         self._size = 0
@@ -225,9 +266,16 @@ class HashMap:
 
     def get_keys(self) -> DynamicArray:
         """
-        TODO: Write this implementation
+        Returns a DynamicArray that contains all keys stored in the Hash Map. Order does not matter.
+
+        Parameters:
+            self(HashMap)
+
+        Returns:
+            da(DynamicArray): contains all valid keys in any order
         """
         da = DynamicArray()
+        # iterate hashmap buckets and append any non-null keys to empty DA --> return da
         for each in range(self.get_capacity()):
             if self._buckets.get_at_index(each) is not None and self._buckets.get_at_index(each).is_tombstone is False:
                 da.append(self._buckets.get_at_index(each).key)
