@@ -81,7 +81,7 @@ class DynamicArray:
 def hash_function_1(key: str) -> int:
     """Sample Hash function #1 to be used with HashMap implementation"""
     hash = 0
-    for letter in key:
+    for letter in str(key):
         hash += ord(letter)
     return hash
 
