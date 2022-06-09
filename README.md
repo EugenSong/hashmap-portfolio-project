@@ -10,8 +10,8 @@ See...
 - a6_include.py contains the provided DynamicArray,
 LinkedList and Singly-Linked Node(SLNode). 
 
-- hash_map_sc.py for implementation using
-chaining. 
+- **hash_map_sc.py** for implementation using
+**_chaining for collision resolution_**. 
 
-- hash_map_oa.py for implementation using 
-open addressing: quadratic probing. 
+- **hash_map_oa.py** for implementation using 
+**_open addressing with quadratic probing_**. 
