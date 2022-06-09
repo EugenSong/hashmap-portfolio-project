@@ -1,7 +1,9 @@
 Data Structures portfolio project: Implementing a HashMap using 
 LinkedLists, DynamicArray, Nodes and the 
 concept of HashMap tombstones in two different 
-ways: chaining and open addressing.
+ways: chaining and open addressing from the 
+ground up without using any built-in 
+Python data structures and or their methods.
 
 See...
 
